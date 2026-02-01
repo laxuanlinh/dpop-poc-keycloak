@@ -16,4 +16,4 @@ Step 8: Call the http://localhost:8080/realms/poc-linh/protocol/openid-connect/t
 
 Step 9: Run node generate_dpop.mjs again but this time with the Tyk endpoint to generate the DPoP token for Tyk and the payment service behind it
 
-Step 10: Use both DPoP token and the access token to access token to access the endpoint
+Step 10: Use both DPoP token and the access token to access token to access the endpoint *DOES NOT WORK YET*
