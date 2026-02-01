@@ -12,6 +12,6 @@ Step 6: Configure the WebAuthN Passwordless policy and add the WebAuthN Password
 
 Step 7: Run node generate_dpop.mjs 
 
-Expected result: The script first generate a keypair, use them to generate a DPoP jwk token with keycloak domain and successfully fetches an access token from Keycloak, then it generate a DPoP jwk token for payment service/Tyk and use both DPoP and access token to access the endpoint
+Expected result: The script first generate a keypair, use them to generate a DPoP proof with keycloak domain and successfully fetches an access token from Keycloak, then it generate a DPoP proof for payment service/Tyk and use both DPoP and access token to access the endpoint
 
 *Still unsuccessul so far*
