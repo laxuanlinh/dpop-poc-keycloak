@@ -6,7 +6,7 @@ This generates a keypair (in real scenarios, devices handle this so we will neve
 The script creates a 2nd DPoP proof with the URL of the resource server which can be used to sendto the Tyk endpoint along with the access token.
 
 ## Step 3: Copy the access token and the 2nd DPoP proof to call the Tyk endpoint with headers:
-- Authorization: DPoP <access token>
-- DPoP: <the 2nd DPoP proof>
+- Authorization: DPoP (access token)
+- DPoP: (the 2nd DPoP proof)
 
 ## Step 4: Watch the logs to see the plugin is triggered to validate DPoP proof first, then conver the DPoP prefix to Bearer to the built-in authentication plugin of Tyk. Tyk then authenticates using the JWK endpoint of keycloak
