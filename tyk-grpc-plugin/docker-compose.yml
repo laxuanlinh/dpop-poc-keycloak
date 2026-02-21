@@ -1,0 +1,16 @@
+services:
+  tyk-grpc-plugin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      - JWS_PRIVATE_KEY
+      - JWS_KEY_ID
+      - JWS_ISSUER
+    networks:
+      - tyk-network

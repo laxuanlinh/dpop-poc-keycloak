@@ -1,22 +1,22 @@
 spring:
   application:
     name: payment
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          # This must match EXACTLY what Tyk and Keycloak use
-          issuer-uri: http://localhost:8080/realms/poc-linh
-          # Optional but faster for startup
-          jwk-set-uri: http://localhost:8080/realms/poc-linh/protocol/openid-connect/certs
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          # This must match EXACTLY what Tyk and Keycloak use
+#          issuer-uri: http://localhost:8080/realms/poc-linh
+#          # Optional but faster for startup
+#          jwk-set-uri: http://localhost:8080/realms/poc-linh/protocol/openid-connect/certs
 server:
   port: 8082
 #  address: 0.0.0.0
 
 keycloak:
   admin:
-    client-id: payment-service
-    client-secret: dSbB0n45bTn8Glzvbd2HyRCHevGYKX9O
+    client-id: poc-linh-app
+    client-secret:
     realm: poc-linh
     server-url: http://localhost:8080
 

@@ -1,19 +1,12 @@
-Step 1: Run npm install jose
+Step 1: Run docker compose up
+It should starts up Redis, Keycloak, Tyk DPoP plugin and Tyk Gateway
 
-Step 2: docker compose up
+Step 2: Run node generate_dpop.mjs
+This generates a keypair (in real scenarios, devices handle this so we will never see the keypair, this is solely for demonstration). Then it uses the private key to sign a request object which includes the token URL, public key... and uses this signed DPoP proof to call the token URL. Keycloak returns an access token that tied to the DPoP proof. 
+The script creates a 2nd DPoP proof with the URL of the resource server which can be used to sendto the Tyk endpoint along with the access token.
 
-Step 3: Go to localhost:8080, login to Keycloak with admin/admin and create a new realm poc-linh
+Step 3: Copy the access token and the 2nd DPoP proof to call the Tyk endpoint with headers:
+- Authorization: DPoP <access token>
+- DPoP: <the 2nd DPoP proof>
 
-Step 4: Create a client poc-linh-app with standard flow and direct access grant flow (for testing)
-
-Step 5: Enable DPoP for the new client
-
-Step 6: Configure the WebAuthN Passwordless policy and add the WebAuthN Passwordless Authenticator as a Required execution
-
-Step 7: Run node generate_dpop.mjs with the keycloak URL to generate the DPoP token
-
-Step 8: Call the http://localhost:8080/realms/poc-linh/protocol/openid-connect/token endpoint with username/password and the DPoP token to get the access token 
-
-Step 9: Run node generate_dpop.mjs again but this time with the Tyk endpoint to generate the DPoP token for Tyk and the payment service behind it
-
-Step 10: Use both DPoP token and the access token to access token to access the endpoint *DOES NOT WORK YET*
+Step 4: Watch the logs to see the plugin is triggered to validate DPoP proof first, then conver the DPoP prefix to Bearer to the built-in authentication plugin of Tyk. Tyk then authenticates using the JWK endpoint of keycloak

@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "Default Policy",
+    "state": "active",
+    "active": true,
+    "access_rights": {
+      "payment-api": {
+        "api_name": "Payment API",
+        "api_id": "payment-api",
+        "versions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

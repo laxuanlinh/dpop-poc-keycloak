@@ -1,15 +1,15 @@
 {
   "privateKeyJWK": {
     "kty": "EC",
-    "x": "yKiImuFT1GzoQVb7RRmpOAINgZQ0qoXKIDrY52N33cY",
-    "y": "j67NCXd7NPULFuWhZsO4bR0oSimMy4kV8FzN72h2DBA",
+    "x": "zgOl_Di-Oy6xxkOlQ0zfroKr6RVpp89Zez3bQBOdeiQ",
+    "y": "uipiG1leNBunL9czfPKJpiTqau6XxTjx0HXdxPNhMq4",
     "crv": "P-256",
-    "d": "W2ZGtJ1L2gafBdToQqF9n-968HuwuIntd1BdtWbTOjA"
+    "d": "EamYRCmPbyXW3k3YuXbG0og9hkdBeTwZ5Cnt5w0XT9g"
   },
   "publicKeyJWK": {
     "kty": "EC",
-    "x": "yKiImuFT1GzoQVb7RRmpOAINgZQ0qoXKIDrY52N33cY",
-    "y": "j67NCXd7NPULFuWhZsO4bR0oSimMy4kV8FzN72h2DBA",
+    "x": "zgOl_Di-Oy6xxkOlQ0zfroKr6RVpp89Zez3bQBOdeiQ",
+    "y": "uipiG1leNBunL9czfPKJpiTqau6XxTjx0HXdxPNhMq4",
     "crv": "P-256"
   }
 }

@@ -7,12 +7,11 @@
       {
         "issuer": "http://keycloak:8080/realms/poc-linh",
         "client_ids": {
-          "poc-linh-app": ""
+          "cG9jLWxpbmgtYXBw": "default"
         }
       }
     ]
   },
-  "enable_dpop": true,
   "proxy": {
     "listen_path": "/payment/",
     "target_url": "http://host.docker.internal:8082",
@@ -27,5 +26,14 @@
       }
     }
   },
-  "active": true
+  "active": true,
+  "custom_middleware": {
+    "driver": "grpc",
+    "pre": [
+      {
+        "name": "DPoPCheck",
+        "require_session": false
+      }
+    ]
+  }
 }
