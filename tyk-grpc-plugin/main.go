@@ -29,6 +29,10 @@ import (
 var (
 	log              = logrus.New()
 	idempotencyStore = sync.Map{}
+
+	// DPoP replay protection store
+	dpopJTIStore = sync.Map{}
+	dpopWindow   = 30 * time.Second
 )
 
 // IdempotencyConfig contains configuration options for the idempotency feature
@@ -450,6 +454,7 @@ func (d *DPoPHandler) DPoPCheck(object *pb.Object) (*pb.Object, error) {
 	}
 
 	// Parse and validate the DPoP proof
+	log.Info("Validating DPoP proof")
 	if err := d.validateDPoPProof(dpopHeader, jkt, object.Request.Method, object.Request.Url); err != nil {
 		log.Errorf("DPoP proof validation failed: %v", err)
 		return d.respondWithError(object, err.Error(), http.StatusUnauthorized)
@@ -534,16 +539,23 @@ func (d *DPoPHandler) validateDPoPProof(dpopProof, expectedJkt, method, requestU
 		return fmt.Errorf("invalid htu claim: path mismatch")
 	}
 
-	// Check jti (JWT ID) - should be unique
-	_, ok = claims["jti"].(string)
-	if !ok {
+	// Extract jti
+	jti, ok := claims["jti"].(string)
+	if !ok || jti == "" {
 		return errors.New("missing or invalid jti claim")
 	}
 
-	// Check iat (Issued At) - should be recent
-	_, ok = claims["iat"].(float64)
+	// Extract iat
+	iatFloat, ok := claims["iat"].(float64)
 	if !ok {
 		return errors.New("missing or invalid iat claim")
+	}
+
+	iat := time.Unix(int64(iatFloat), 0)
+
+	// Replay + time validation
+	if err := checkAndStoreJTI(jti, iat); err != nil {
+		return err
 	}
 
 	// Get the JWK from the header
@@ -562,6 +574,37 @@ func (d *DPoPHandler) validateDPoPProof(dpopProof, expectedJkt, method, requestU
 	if calculatedJkt != expectedJkt {
 		return fmt.Errorf("JKT mismatch: expected %s, calculated %s", expectedJkt, calculatedJkt)
 	}
+
+	return nil
+}
+
+// checkAndStoreJTI validates iat and ensures jti is not reused
+func checkAndStoreJTI(jti string, iat time.Time) error {
+	log.Infof("Checking JTI: %s with iat: %s", jti, iat)
+	now := time.Now()
+
+	// 1. Check time window
+	if now.Sub(iat) > dpopWindow || iat.After(now.Add(5*time.Second)) {
+		return errors.New("DPoP proof outside allowed time window")
+	}
+
+	// 2. Replay detection
+	_, found := dpopJTIStore.Load(jti)
+	if found {
+		return errors.New("DPoP replay detected")
+	}
+
+	// 3. Store jti
+	dpopJTIStore.Store(jti, iat)
+
+	// 4. Lazy cleanup (remove old entries)
+	dpopJTIStore.Range(func(key, value interface{}) bool {
+		storedTime := value.(time.Time)
+		if now.Sub(storedTime) > dpopWindow {
+			dpopJTIStore.Delete(key)
+		}
+		return true
+	})
 
 	return nil
 }
